@@ -50,30 +50,5 @@ class API_Client():
         response = self.session.post(url, json=data)
         response.raise_for_status()
         return response.json()
-    
-    def convert_to_dataframe(self, data: any):
-        """
-        Take the JSON output from the endpoint and convert to a dataframe for analysis.
-        
-        Args:
-            data: JSON data
 
-        Returns:
-            pandas.DataFrame: DataFrame containing data
-        """
-        if isinstance(data, list):
-            df = pd.DataFrame(data)
-
-        elif isinstance(data, dict):
-            for key, value in data.items():
-                if isinstance(value, list) and len(value)> 0:
-                    df = pd.DataFrame(value)
-                    break
-
-            else:
-                df = pd.DataFrame([data])
-
-        else: df = pd.DataFrame()
-    
-        return df
 
