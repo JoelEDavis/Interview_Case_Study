@@ -47,20 +47,67 @@ class API_Client():
             JSON response data 
         """
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        json_data = json.dumps(data)
-
-        try:
-            response = self.session.post(
-                url,
-                json=json_data,
-                headers={"Content-Type": "application/json"}
-            )
-            response.raise_for_status()
-            return response.json()
         
-        except requests.exceptions.RequestException as e:
-            print(f"Error posting to {url}: {e}")
-            if hasattr(e.response, "text"):
-                print(f"Response: {e.response.text}")
-            raise
+        success_count = 0
+        failure_count = 0
+        responses = []
+        failed_records = []
+
+        if isinstance(data, pd.DataFrame):
+                total_records = len(data)
+                print(f"Starting migration of {total_records} records to {endpoint}")
+                
+                if total_records > 0:
+                    for index, row in data.iterrows():
+                        record = row.to_dict()
+                        try:
+                            response = self.session.post(
+                                url,
+                                json=record,
+                                headers={"Content-Type": "application/json"}
+                            )
+                            response.raise_for_status()
+                            responses.append(response.json())
+                            success_count += 1
+                            
+                            if success_count % 10 == 0 or success_count == total_records:
+                                print(f"Progress: {success_count}/{total_records} records migrated successfully")
+                            
+                        except requests.exceptions.RequestException as e:
+                            failure_count += 1
+                            failed_records.append({"record": record, "error": str(e)})
+                            print(f"Error posting record {index}: {e}")
+                            if hasattr(e.response, "text"):
+                                print(f"Response: {e.response.text}")
+                            continue
+                    
+                    print(f"Migration complete: {success_count} successes, {failure_count} failures")
+                else:
+                    print("Warning: Empty DataFrame provided to post method")
+            
+        else:
+            try:
+                response = self.session.post(
+                    url,
+                    json=data,
+                    headers={"Content-Type": "application/json"}
+                )
+                response.raise_for_status()
+                responses.append(response.json())
+                success_count = 1
+                print(f"Successfully posted 1 record to {endpoint}")
+                
+            except requests.exceptions.RequestException as e:
+                failure_count = 1
+                failed_records.append({"record": data, "error": str(e)})
+                print(f"Error posting to {url}: {e}")
+                if hasattr(e.response, "text"):
+                    print(f"Response: {e.response.text}")
+            
+        return {
+            "success_count": success_count,
+            "failure_count": failure_count,
+            "responses": responses,
+            "failed_records": failed_records
+        }
 

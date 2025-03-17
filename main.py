@@ -31,10 +31,9 @@ if __name__ == "__main__":
     print("Currencies converted...")
     annual_agg = annual_aggregation(converted_df)
     print("Annual aggregations produced...")
-    print(annual_agg)
-    
+
     # Post the annual aggregation data
     response = api_connector.post(annual_data_endpoint, annual_agg)
     
     # Print response confirmation
-    print(f"Data posted successfully! Response: {response}")
+    print(f"Data posted successfully!")
