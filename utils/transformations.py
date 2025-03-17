@@ -1,7 +1,7 @@
 import pandas as pd
 from datetime import datetime
 
-def remove_invalid_rows(data: pd.DataFrame, currency_df: pd.DataFrame) -> pd.DataFrame:
+def remove_invalid_rows(data: pd.DataFrame, currency_data: pd.DataFrame) -> pd.DataFrame:
     """
     Process and remove invalid rows based on following parameters:
         1. Timestamp must be in the format YYYY-MM-DD and before today's date
@@ -16,8 +16,10 @@ def remove_invalid_rows(data: pd.DataFrame, currency_df: pd.DataFrame) -> pd.Dat
         pd.DataFrame: Cleaned DataFrame with invalid rows removed
     """
     df = data.copy()
+    currency_df = currency_data.copy()
 
     valid_currencies = set(currency_df["from_currency"])
+    valid_currencies.add("SEK")
     
     valid_timestamp_mask = df["timestamp"].apply(lambda x: 
         isinstance(x, str) and 
@@ -30,7 +32,7 @@ def remove_invalid_rows(data: pd.DataFrame, currency_df: pd.DataFrame) -> pd.Dat
     )
     
     valid_currency_mask = df["currency"].apply(lambda x: 
-        not pd.isna(x) and x in valid_currencies or "SEK"
+        not pd.isna(x) and x in valid_currencies
     )
     
     valid_rows_mask = valid_timestamp_mask & valid_value_mask & valid_currency_mask
@@ -38,7 +40,9 @@ def remove_invalid_rows(data: pd.DataFrame, currency_df: pd.DataFrame) -> pd.Dat
     return df[valid_rows_mask]
 
 def is_valid_date_format(date_str):
-    """Check if a string is in YYYY-MM-DD format"""
+    """
+    Check if a string is in YYYY-MM-DD format
+    """
     if pd.isna(date_str):
         return False
     
@@ -73,3 +77,49 @@ def convert_to_dataframe(data: any):
     else: df = pd.DataFrame()
     
     return df
+
+def convert_currency(data: pd.DataFrame, currency_data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Convert non-SEK currencies to SEK to normalise valuations.
+
+    Args:
+        data (pd.DataFrame): DataFrame containing monthly company data
+        currency_date (pd.DataFrame): DataFrame containing currency pairs and their conversion rates
+
+    Returns:
+        pd.DataFrame: DataFrame containing monthly company data with converted values
+    """
+    data_df = data.copy()
+    currency_df = currency_data.copy()
+
+    for i, row in data_df.iterrows():
+        currency = row["currency"]
+        matching_rate = currency_df[currency_df["from_currency"] == currency]
+
+        if not matching_rate.empty:
+            conversion = matching_rate.iloc[0]
+            data_df.at[i, "value"] = row["value"] * conversion["rate"]
+            data_df.at[i, "currency"] = conversion["to_currency"]
+
+    return data_df
+
+def annual_aggregation(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Aggregate monthly data into annual, per-company output.
+
+    Args:
+        data (pd.DataFrame): DataFrame with columns timestamp, value, company and currency.
+
+    Returns:
+        pd.DataFrame: DataFrame containing aggregated annual valuations, years and company names.
+    """
+    data_df = data.copy()
+
+    data_df["timestamp"] = pd.to_datetime(data_df["timestamp"])
+    data_df["year"] = data_df["timestamp"].dt.year
+
+    annual_aggregation = data_df.groupby(["company", "year", "currency"]).agg(
+        value = ("value", "mean")
+    ).reset_index()
+
+    return annual_aggregation
