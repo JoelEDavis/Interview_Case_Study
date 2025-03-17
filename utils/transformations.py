@@ -18,8 +18,7 @@ def remove_invalid_rows(data: pd.DataFrame, currency_data: pd.DataFrame) -> pd.D
     df = data.copy()
     currency_df = currency_data.copy()
 
-    valid_currencies = set(currency_df["from_currency"])
-    valid_currencies.add("SEK")
+    valid_currencies = set(currency_df["from_currency"]).union(set(currency_df["to_currency"]))
     
     valid_timestamp_mask = df["timestamp"].apply(lambda x: 
         isinstance(x, str) and 
@@ -111,7 +110,7 @@ def annual_aggregation(data: pd.DataFrame) -> pd.DataFrame:
         data (pd.DataFrame): DataFrame with columns timestamp, value, company and currency.
 
     Returns:
-        pd.DataFrame: DataFrame containing aggregated annual valuations, years and company names.
+        pd.DataFrame: DataFrame containing companies aggregated annually by valuations.
     """
     data_df = data.copy()
 

@@ -47,8 +47,20 @@ class API_Client():
             JSON response data 
         """
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        response = self.session.post(url, json=data)
-        response.raise_for_status()
-        return response.json()
+        json_data = json.dumps(data)
 
+        try:
+            response = self.session.post(
+                url,
+                json=json_data,
+                headers={"Content-Type": "application/json"}
+            )
+            response.raise_for_status()
+            return response.json()
+        
+        except requests.exceptions.RequestException as e:
+            print(f"Error posting to {url}: {e}")
+            if hasattr(e.response, "text"):
+                print(f"Response: {e.response.text}")
+            raise
 
