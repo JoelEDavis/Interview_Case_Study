@@ -46,21 +46,12 @@ sprints-technical-case-study/
 └── main.py               # Main application entry point
 ```
 
-## Running the Application
-
-To start the FastAPI server:
-
-```bash
-uvicorn main:app --reload
-```
-
-The API will be available at http://127.0.0.1:8000
-
 ## API Endpoints
+
+Endpoints are available at https://technical-case-platform-engineer.onrender.com/docs
 
 - `GET /`: Root endpoint that returns a welcome message
 - `GET /docs`: Swagger UI documentation
-- `GET /redoc`: ReDoc documentation
 
 ## ETL Process
 
