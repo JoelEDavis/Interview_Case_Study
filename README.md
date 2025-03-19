@@ -11,8 +11,8 @@ This project implements an ETL (Extract, Transform, Load) process using FastAPI 
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/joeledavis/sprints-technical-case-study.git
-   cd sprints-technical-case-study
+   git clone https://github.com/JoelEDavis/Interview_Case_Study.git
+   cd interview_case_study
    ```
 
 2. Create a virtual environment
@@ -38,7 +38,7 @@ This project implements an ETL (Extract, Transform, Load) process using FastAPI 
 ## Project Structure
 
 ```
-sprints-technical-case-study/
+interview_case_study/
 ├── utils/                # Utility functions for ETL processing
 ├── pyproject.toml        # Project configuration and dependencies
 ├── README.md             # This file

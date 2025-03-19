@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sprints-technical-case-study"
+name = "interview_case_study"
 version = "0.1.0"
 authors = [
   {name = "Joel Davis", email = "jdavis2011@hotmail.co.uk"},
@@ -11,7 +11,6 @@ authors = [
 
 description = "ETL process using FastAPI for the Sprints Case Study"
 readme = "README.md"
-
 requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -23,5 +22,5 @@ dependencies = [
     "python-dateutil>=2.8.2",
 ]
 
-[tool.setuptools]
-packages = ["utils"]
+[tool.setuptools.packages.find]
+where = ["."]
