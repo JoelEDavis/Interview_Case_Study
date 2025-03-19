@@ -6,6 +6,7 @@ This project implements an ETL (Extract, Transform, Load) process using FastAPI 
 
 - Python 3.9 or higher
 - Git (for cloning the repository)
+- Pip >= 22.0.0 (for using pyproject.toml file)
 
 ## Installation
 
@@ -30,7 +31,7 @@ This project implements an ETL (Extract, Transform, Load) process using FastAPI 
      source venv/bin/activate
      ```
 
-4. Install the project and its dependencies (requires pip>=22.0.0)
+4. Install the project and its dependencies
    ```bash
    pip install -e .
    ```
