@@ -30,7 +30,7 @@ This project implements an ETL (Extract, Transform, Load) process using FastAPI 
      source venv/bin/activate
      ```
 
-4. Install the project and its dependencies
+4. Install the project and its dependencies (requires pip>=22.0.0)
    ```bash
    pip install -e .
    ```
