@@ -40,7 +40,6 @@ This project implements an ETL (Extract, Transform, Load) process using FastAPI 
 ```
 sprints-technical-case-study/
 ├── utils/                # Utility functions for ETL processing
-├── tests/                # Test suite (not tracked in git)
 ├── pyproject.toml        # Project configuration and dependencies
 ├── README.md             # This file
 └── main.py               # Main application entry point
