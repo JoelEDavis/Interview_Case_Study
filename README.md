@@ -11,7 +11,7 @@ This project implements an ETL (Extract, Transform, Load) process using FastAPI 
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/sprints-technical-case-study.git
+   git clone https://github.com/joeledavis/sprints-technical-case-study.git
    cd sprints-technical-case-study
    ```
 
